@@ -3,17 +3,7 @@
 version: '3'
 env:
   ENV: testing
-  PYTHONWARNINGS: "ignore"
 dotenv: ['.env', '.env.{{.ENV}}']
-vars:
-  AGENT_VERSION:
-    sh: |
-      uv run --no-project python -c "
-      import re, pathlib
-      p = pathlib.Path('.datarobot/answers/agent-agent.yml')
-      m = re.search(r'_commit:\s*(\S+)', p.read_text() if p.exists() else '')
-      print(m[1] if m else '')
-      "
 
 includes:
   common:
@@ -51,25 +41,11 @@ tasks:
   start-non-interactive:
     cmds:
       - task: start
-        vars:
-          COPIER_FLAGS: "-l"
 
   start:
     desc: "💻 Prepare local development environment"
     cmds:
       - dr self update
-      - "echo '✨ Choose your agentic framework.'"
-      - task: rewrite-answers-urls
-      - |
-        PYTHONWARNINGS=ignore uvx copier recopy -a .datarobot/answers/agent-agent.yml \
-        -r {{.AGENT_VERSION}} \
-        --data base_answers_file=.datarobot/answers/base.yml \
-        --data agent_app_name=agent \
-        --data agent_development_port=8842 \
-        --data include_taskfile_infra=no \
-        --data mcp_answers_file=.datarobot/answers/drmcp-mcp_server.yml \
-        --data llm_answers_file=.datarobot/answers/llm-llm.yml \
-        {{.COPIER_FLAGS}} -w --quiet
       - task build-agents-md
       - dr task compose
       - dr dotenv setup --if-needed
@@ -77,22 +53,6 @@ tasks:
       - task install
       - dr task run start
       - echo '✅ You are all set. Run `task dev` to start developing, or run `task deploy` to deploy to DataRobot.'
-
-  # https://github.com/datarobot-oss/cli/pull/722 replace with dr component rewrite-config if merged
-  rewrite-answers-urls:
-    internal: true
-    cmds:
-      - |
-        uv run --no-project python -c "
-        import os, pathlib
-        base_url = os.environ.get('APPLICATION_TEMPLATE_GIT_BASE_URL')
-        if base_url:
-            base_url = base_url.rstrip('/')
-            for p in pathlib.Path('.datarobot/answers').glob('*.yml'):
-                text = p.read_text()
-                p.write_text(text.replace('https://github.com/datarobot-community', base_url))
-        "
-
   build-agents-md:
     cmds:
       - cmd: |

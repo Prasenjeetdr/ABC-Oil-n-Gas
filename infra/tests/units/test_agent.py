@@ -12,13 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import asyncio
-import os
 import sys
-from collections import namedtuple
+import os
 from pathlib import Path
-from unittest.mock import MagicMock, PropertyMock, patch
-
 import pytest
+from unittest.mock import patch, MagicMock, PropertyMock
+from collections import namedtuple
 
 # Ensure the test directory is in sys.path for proper imports
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -176,7 +175,6 @@ def test_execution_environment_not_set_and_docker_context(monkeypatch):
     monkeypatch.delenv("DATAROBOT_DEFAULT_EXECUTION_ENVIRONMENT", raising=False)
 
     import importlib
-
     import infra.agent as agent_infra
 
     # Reset the mock to clear calls from the initial import
@@ -220,7 +218,6 @@ def test_execution_environment_not_set_with_docker_image(monkeypatch):
     monkeypatch.setattr("os.path.exists", mock_exists)
 
     import importlib
-
     import infra.agent as agent_infra
 
     # Reset the mock to clear calls from the initial import
@@ -257,7 +254,6 @@ def test_execution_environment_default_set(monkeypatch):
     )
 
     import importlib
-
     import infra.agent as agent_infra
 
     importlib.reload(agent_infra)
@@ -294,7 +290,6 @@ def test_execution_environment_pinned_set(monkeypatch):
     )
 
     import importlib
-
     import infra.agent as agent_infra
 
     importlib.reload(agent_infra)
@@ -326,7 +321,6 @@ def test_execution_environment_custom_set(monkeypatch):
     )
 
     import importlib
-
     import infra.agent as agent_infra
 
     importlib.reload(agent_infra)
@@ -353,9 +347,8 @@ def test_execution_environment_custom_set(monkeypatch):
 
 def test_resolve_execution_environment_version_not_found_returns_none(monkeypatch):
     """When pinned EE version is not found in DataRobot, warn and return None (use latest)."""
-    from datarobot.errors import ClientError
-
     import infra.agent as agent_infra
+    from datarobot.errors import ClientError
 
     monkeypatch.setenv(
         "DATAROBOT_DEFAULT_EXECUTION_ENVIRONMENT_VERSION_ID",
@@ -380,9 +373,8 @@ def test_resolve_execution_environment_version_not_found_returns_none(monkeypatc
 
 def test_resolve_execution_environment_version_found(monkeypatch):
     """When pinned version exists and build_status is SUCCESS, return its id."""
-    from datarobot.enums import EXECUTION_ENVIRONMENT_VERSION_BUILD_STATUS
-
     import infra.agent as agent_infra
+    from datarobot.enums import EXECUTION_ENVIRONMENT_VERSION_BUILD_STATUS
 
     monkeypatch.setenv(
         "DATAROBOT_DEFAULT_EXECUTION_ENVIRONMENT_VERSION_ID",
@@ -459,7 +451,6 @@ def test_reset_environment_between_tests():
     assert os.environ.get("DATAROBOT_DEFAULT_EXECUTION_ENVIRONMENT") is None
 
     import importlib
-
     import infra.agent as agent_infra
 
     importlib.reload(agent_infra)
@@ -475,7 +466,6 @@ def test_custom_model_created(monkeypatch):
     monkeypatch.delenv(AGENT_MEMORY_TTL_DAYS, raising=False)
 
     import importlib
-
     import infra.agent as agent_infra
 
     # Reset the mock to clear calls from the initial import
@@ -551,7 +541,6 @@ def test_custom_model_created_pinned_version_id(monkeypatch):
     )
 
     import importlib
-
     import infra.agent as agent_infra
 
     # Reset the mock to clear calls from the initial import
@@ -575,7 +564,6 @@ def test_custom_model_resource_bundle_and_replicas(monkeypatch):
     monkeypatch.delenv("ENABLE_AGENT_HA_MODE", raising=False)
 
     import importlib
-
     import infra.agent as agent_infra
 
     # Reset the mock to clear calls from the initial import
@@ -598,7 +586,6 @@ def test_custom_model_resource_bundle_and_replicas_ha_mode(monkeypatch):
     monkeypatch.setenv("ENABLE_AGENT_HA_MODE", "true")
 
     import importlib
-
     import infra.agent as agent_infra
 
     agent_infra.pulumi_datarobot.CustomModel.reset_mock()
@@ -617,7 +604,6 @@ def test_agentic_playground_and_blueprint_created(monkeypatch):
     monkeypatch.setenv("DATAROBOT_ENDPOINT", "https://example.datarobot.com/api/v2")
 
     import importlib
-
     import infra.agent as agent_infra
 
     # Reset the mocks to clear calls from the initial import
@@ -671,7 +657,6 @@ def test_agent_deployment_created_when_env(monkeypatch):
     monkeypatch.delenv("DATAROBOT_DEFAULT_EXECUTION_ENVIRONMENT", raising=False)
 
     import importlib
-
     import infra.agent as agent_infra
 
     # Reset mocks to clear calls from the initial import
@@ -698,7 +683,6 @@ def test_agent_deployment_uses_existing_prediction_environment(monkeypatch):
     monkeypatch.delenv("DATAROBOT_DEFAULT_EXECUTION_ENVIRONMENT", raising=False)
 
     import importlib
-
     import infra.agent as agent_infra
 
     # Reset mocks to clear calls from the initial import
@@ -722,7 +706,6 @@ def test_agent_deployment_not_created_when_env_zero(monkeypatch):
     monkeypatch.delenv("DATAROBOT_DEFAULT_EXECUTION_ENVIRONMENT", raising=False)
 
     import importlib
-
     import infra.agent as agent_infra
 
     # Reset mocks to clear calls from the initial import
@@ -833,7 +816,6 @@ class TestUpdateDeploymentPredictionsSettings:
         )
 
         import importlib
-
         import infra.agent as agent_infra
 
         importlib.reload(agent_infra)
@@ -901,7 +883,6 @@ class TestEnableAgentHAMode:
         """Test that HA mode is disabled by default."""
         monkeypatch.delenv("ENABLE_AGENT_HA_MODE", raising=False)
         import importlib
-
         import infra.agent as agent_infra
 
         importlib.reload(agent_infra)
@@ -916,7 +897,6 @@ class TestEnableAgentHAMode:
         """Test that HA mode is disabled when explicitly set to 'false'."""
         monkeypatch.setenv("ENABLE_AGENT_HA_MODE", "false")
         import importlib
-
         import infra.agent as agent_infra
 
         importlib.reload(agent_infra)
@@ -931,7 +911,6 @@ class TestEnableAgentHAMode:
         """Test that HA mode is enabled when set to 'true'."""
         monkeypatch.setenv("ENABLE_AGENT_HA_MODE", "true")
         import importlib
-
         import infra.agent as agent_infra
 
         importlib.reload(agent_infra)
@@ -955,7 +934,6 @@ class TestEnableAgentHAMode:
         for value, expected in test_cases:
             monkeypatch.setenv("ENABLE_AGENT_HA_MODE", value)
             import importlib
-
             import infra.agent as agent_infra
 
             importlib.reload(agent_infra)
@@ -1294,9 +1272,8 @@ class TestGetMcpCustomModelRuntimeParameters:
 class TestGenerateMetadataYaml:
     def test_mixed_parameters(self, tmp_path, monkeypatch):
         """Test _generate_metadata_yaml with various parameter types to verify defaultValue behavior."""
-        import yaml  # type: ignore[import-untyped]
-
         import infra.agent as agent_infra
+        import yaml  # type: ignore[import-untyped]
 
         # Mock the application path to point to our tmp_path
         monkeypatch.setattr(agent_infra, "agent_application_path", tmp_path)
@@ -1369,9 +1346,8 @@ class TestGenerateMetadataYaml:
 
     def test_with_empty_parameters(self, tmp_path, monkeypatch):
         """Test _generate_metadata_yaml generates correct YAML with empty parameter list."""
-        import yaml  # type: ignore[import-untyped]
-
         import infra.agent as agent_infra
+        import yaml  # type: ignore[import-untyped]
 
         # Mock the application path to point to our tmp_path
         monkeypatch.setattr(agent_infra, "agent_application_path", tmp_path)
@@ -1394,9 +1370,8 @@ class TestGenerateMetadataYaml:
 
     def test_format_and_overwrite(self, tmp_path, monkeypatch):
         """Test _generate_metadata_yaml file formatting and overwrite behavior."""
-        import yaml  # type: ignore[import-untyped]
-
         import infra.agent as agent_infra
+        import yaml  # type: ignore[import-untyped]
 
         # Mock the application path to point to our tmp_path
         monkeypatch.setattr(agent_infra, "agent_application_path", tmp_path)
@@ -1435,7 +1410,6 @@ class TestAgentMemoryRuntimeParameter:
         monkeypatch.setenv(AGENT_MEMORY_TTL_DAYS, "1")
 
         import importlib
-
         import infra.agent as agent_infra
 
         importlib.reload(agent_infra)
@@ -1458,7 +1432,6 @@ class TestServerRuntimeParameters:
         monkeypatch.delenv("DATAROBOT_DEFAULT_EXECUTION_ENVIRONMENT", raising=False)
 
         import importlib
-
         import infra.agent as agent_infra
 
         importlib.reload(agent_infra)
@@ -1490,7 +1463,6 @@ class TestServerRuntimeParameters:
         monkeypatch.delenv("DATAROBOT_DEFAULT_EXECUTION_ENVIRONMENT", raising=False)
 
         import importlib
-
         import infra.agent as agent_infra
 
         agent_infra.pulumi_datarobot.CustomModel.reset_mock()
@@ -1553,7 +1525,6 @@ class TestA2AEndpointRuntimeParameter:
         )
 
         import importlib
-
         import infra.agent as agent_infra
 
         importlib.reload(agent_infra)
@@ -1575,7 +1546,6 @@ class TestA2AEndpointRuntimeParameter:
         )
 
         import importlib
-
         import infra.agent as agent_infra
 
         importlib.reload(agent_infra)

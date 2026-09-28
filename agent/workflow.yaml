@@ -26,17 +26,18 @@ general:
     # If you don't want your agent to expose A2A endpoints, remove the following block.
     a2a:
       server:
-        name: Blog Content Writer
-        description: An AI content writing agent that researches and writes well-structured blog posts. Provide a topic and
-          it will generate a concise, publication-ready article in markdown format.
+        name: Drilling Watch
+        description: A remote-operations agent watching four wells on a replayed hour of telemetry. It interprets a deployed
+          DataRobot classifier, reconciles it against the operations log, names the incident, and says whether a human
+          needs to act.
       skills:  # Optional: advertise specific skills in the agent card
-        - id: write_blog
-          name: Write Blog Post
-          description: Researches and writes a blog post on the given topic.
+        - id: watch_fleet
+          name: Watch Drilling Fleet
+          description: Interprets telemetry and the classifier for the four wells and decides whether a human needs to act.
           tags: []
           examples:
-            - Write a blog post about the future of AI in healthcare
-            - Create an article about sustainable energy trends
+            - What's the fleet doing?
+            - Walk me through how the kick on GUY-002 developed, from onset to now.
             # Optional: Okta cross-application access (XAA) authentication for this agent's A2A endpoints.
             # Uncomment to advertise XAA requirements on the agent card. See docs/agent/agent2agent-auth.md.
             # cross_application_access:
@@ -64,7 +65,7 @@ functions:
   langgraph_agent:
     _type: langgraph_agent
     llm_name: datarobot_llm
-    description: LangGraph planner/writer agent
+    description: LangGraph drilling watcher agent
     # tool_names:
     #   - remote_agent
 llms:
@@ -92,7 +93,7 @@ workflow:
   inner_agent_name: langgraph_agent
   memory_name: mem0_memory
   llm_name: datarobot_llm
-  description: LangGraph planner/writer agent with automatic memory capture and retrieval
+  description: LangGraph drilling watcher agent with automatic memory capture and retrieval
   middleware: [datarobot_moderation, datarobot_otel_conventions]
 middleware:
   datarobot_moderation:

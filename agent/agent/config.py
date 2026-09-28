@@ -49,6 +49,10 @@ class Config(DataRobotAppFrameworkBaseSettings):  # type: ignore[misc]
     llm_nim_deployment_id: str | None = None
     llm_use_datarobot_llm_gateway: bool = True
 
+    # Serverless deployment id for the well_event classifier (one, not four),
+    # read from DEPLOYMENT_DRILLING_CLASSIFIER.
+    deployment_drilling_classifier: str | None = None
+
     mcp_deployment_id: str | None = None
     external_mcp_url: str | None = None
     local_dev_port: int = Field(

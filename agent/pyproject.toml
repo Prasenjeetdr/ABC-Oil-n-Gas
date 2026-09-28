@@ -17,6 +17,8 @@ dependencies = [
     # Keep this in sync with the ag-ui-protocol version in fastapi_server/pyproject.toml of the
     # recipe-datarobot-agent-application.
     "ag-ui-protocol==0.1.15",
+    # Direct serverless scoring against the deployment is a plain HTTP POST.
+    "requests>=2.33.0",
 ]
 
 [project.optional-dependencies]
@@ -319,3 +321,6 @@ langgraph_agent = "agent.register"
 
 [tool.setuptools.packages.find]
 include = ["agent*"]
+
+[tool.setuptools.package-data]
+agent = ["data/*.csv"]
